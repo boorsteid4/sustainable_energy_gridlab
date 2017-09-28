@@ -22,7 +22,6 @@
     <ProjectGuid>{D2BE1C21-D45C-4B41-AF44-1BAD96E704FE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MyXLlib</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -146,6 +145,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="parseCSV.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="parseCSV.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
