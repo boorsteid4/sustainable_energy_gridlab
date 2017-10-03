@@ -1,0 +1,17 @@
+Node,Line,line spacing,overhead conductor,Underground line conductor,Triplex line,triplex line configuration,triplex conductor,transformer,tranformer config,Load,meter,Triplex node (split phase level system),regulator,Capacitor,Fuse,switch,recloser,relay,substation
+phase,phase,distance AB,gmr,outer diameter,length,insulation thickness,restistance,phase,"connection type (delta-delta, delta-wye)",over time data for the model,phase,phase,connection type,phase,phase,phase,phase,phase,bus type
+nominal voltage,from,distance BC,resistance ,conductor gmr,from,diameter,gmr,from to,installation type,,nominal voltage,"voltage(1,2,N)",band center,phase connected,from,from,from,from,parent
+bus type,to,distance AC,diameter ,conductor diameter,to,,,,powe rrating,,,power,band width,"capacitor (A,B,C)",to,to,to,to,phase
+,length,distance (A/B/C)N,,conductor resistancee,,,,,primary coltage,,,shunt,time delay,control level,current limit,status (Open/Closed),retry time,recloser delays,nominal voltage
+,,,,neutral gmr,,,,,secondary coltage,,,nominal voltage,raise taps,"switch status (A, B, C)",mean replacement time,,max number of tries (3 usually),recloser tries,
+,,,,neutral resistance,,,,,resistance,,,,lower taps,nominal voltage,repair distribution type,,,,
+,,,,neutral diameter,,,,,reactance,,,,current transducer ratio,,,,,,
+,,,,neutral strands,,,,,,,,,power transducer ratio,,,,,,
+,,,,shield gmr,,,,,,,,,compensator setting (resistive and reactive per phase),,,,,,
+,,,,shield resistance,,,,,,,,,current transducer phase,,,,,,
+gmr = geometric mean radius (ft),,,,,,,,,,,,,power transducer phase,,,,,,
+resistance (ohm/mile),,,,,,,,,,,,,regulation,,,,,,
+diameter (in),,,,,,,,,,,,,"control (i.e. manual, voltage based, etc)",,,,,,
+length (ft),,,,,,,,,,,,,"control level (individual, bank)",,,,,,
+"Capacitor (A,B,C) (Volt-Amperes reactive)",,,,,,,,,,,,,type of step-voltage regulator,,,,,,
+triplex - distribution wire coming from a transformer into a residential home ,,,,,,,,,,,,,"initial tap position (A,B,C)",,,,,,
