@@ -1,0 +1,356 @@
+/*	FALL2017.glm
+ *	
+ *		GridLAB-D file for three houses in Atlantic City, NJ.
+ *		
+ *
+ */ 
+
+module powerflow {
+     solver_method NR;
+     NR_iteration_limit 50;
+};
+
+
+clock {
+     timezone EST+5EDT;					// Eastern Standard Time (+5EDT)
+     starttime '2017-10-23 23:59:99';
+     stoptime '2017-10-24 23:59:99';
+}
+
+module tape;				// recorder-player module for data
+module climate;				// climate module for calculating temperature data
+module residential{			// solve for a residential area
+	implicit_enduses NONE;
+};
+module generators;
+
+object climate {
+	name "Atlantic NJ";
+	tmyfile "93730.tmy2";	// weather data for Atlantic City, NJ
+	interpolate LINEAR;
+}
+
+//Configurations
+object line_configuration {
+      name line_configuration_1;     
+      conductor_A overhead_line_conductor_1;     
+      conductor_B overhead_line_conductor_1;     
+      conductor_C overhead_line_conductor_1;     
+      conductor_N overhead_line_conductor_1;     
+      spacing line_spacing_1;     
+} 
+ 
+object line_spacing {     
+      name line_spacing_1;     
+      distance_AB 57.6 in;    
+      distance_BC 57.6 in;    
+      distance_AC 57.6 in;    
+      distance_AN 51.6 in;    
+      distance_BN 51.6 in;    
+      distance_CN 51.6 in;    
+}  
+object line_spacing {     
+      name line_spacing_2;     
+      distance_AB 24 in;    
+      distance_BC 24 in;    
+      distance_AC 48 in;    
+      distance_AN 60 in;    
+      distance_BN 48 in;    
+      distance_CN 24 in;    
+} 
+object overhead_line_conductor {     
+      name overhead_line_conductor_1;      
+      rating.summer.continuous 256.0;     
+      geometric_mean_radius 0.01200 ft;    
+      resistance 0.1;     
+}  
+
+object overhead_line_conductor {     
+      name overhead_line_conductor_2;      
+  	  rating.summer.continuous 150.0;     
+      geometric_mean_radius 0.02200 ft;    
+      resistance 0.2;     
+}
+object transformer_configuration {
+    	name substation_transformer_config;
+    	connect_type WYE_WYE;
+     	install_type PADMOUNT;
+     	primary_voltage 132790;
+     	secondary_voltage 7216;
+     	power_rating 8.4 MVA;
+     	impedance 0.00033+0.0022j;
+}
+object transformer_configuration {
+     name house_transformer;
+     connect_type SINGLE_PHASE_CENTER_TAPPED;
+     install_type PADMOUNT;
+     primary_voltage 7200 V;
+     secondary_voltage 124 V;
+     power_rating 250;
+     powerA_rating 250;
+     impedance 0.015+0.0675j;
+}
+object triplex_line_configuration {
+      name triplex_line_config;
+      conductor_1 Name_1_0_AA_triplex;
+      conductor_2 Name_1_0_AA_triplex;
+      conductor_N Name_1_0_AA_triplex;
+      insulation_thickness 0.1;
+      diameter 0.4;
+}
+object triplex_line_conductor {
+      name Name_1_0_AA_triplex;
+      resistance 0.57;
+      geometric_mean_radius 0.0111;
+}
+
+
+//Feeder head
+object node {
+	name feeder_head;
+	bustype SWING;
+	phases ABCN;
+    nominal_voltage 132790;
+}
+object transformer {
+     name substation_transformer;
+     from feeder_head;
+     to substation_meter;
+     phases ABCN;
+     configuration substation_transformer_config;
+}
+
+object meter {     
+      name substation_meter;     
+      phases ABCN;     
+      nominal_voltage 7216.88;         
+} 
+
+//post substation meter
+object overhead_line {     
+      name line_1;     
+      phases ABCN;     
+      from substation_meter;     
+      to meter_1;     
+      length 10000;     
+      configuration line_configuration_1;     
+} 
+object meter {     
+      name meter_1; 
+      groupid meter;    
+      phases ABCN;     
+      nominal_voltage 7216.88;     
+}
+
+//first house
+object transformer {
+     name house1_trans;
+     phases AS;
+     from meter_1;
+     to house1_node;
+     configuration house_transformer;
+}
+object triplex_node {     
+     name house1_node;
+     phases AS;
+     nominal_voltage 124.00;     
+} 
+object triplex_line {
+     name tl;
+     from house1_node;
+     to house1_meter;
+     phases AS;
+     length 10;
+     configuration triplex_line_config;
+}
+object triplex_meter {     
+     name house1_meter;
+     phases AS;
+     nominal_voltage 124.00;     
+} 
+object house {
+     name house1;
+     parent house1_meter;
+     thermal_integrity_level LITTLE;
+     hvac_power_factor 0.97;
+     cooling_COP 3.90;
+     floor_area 1040;
+	 cooling_setpoint 65;
+	 thermostat_deadband 6;
+	 air_temperature 70;
+	 object ZIPload {
+          schedule_skew 260;
+          base_power 4.445;
+          power_fraction 1.000000;
+          impedance_fraction 0.000000;
+          current_fraction 0.000000;
+          power_pf 0.970;
+          current_pf 0.970;
+          impedance_pf 0.970;
+          heat_fraction 0.90;
+     };
+}
+
+//after house 1
+object overhead_line {     
+      name line_2;     
+      phases ABCN;     
+      from meter_1;     
+      to meter_2;     
+      length 10000;     
+      configuration line_configuration_1;     
+} 
+object meter {     
+      name meter_2; 
+      groupid meter;    
+      phases ABCN;     
+      nominal_voltage 7216.88;     
+}
+
+//second house
+object transformer {
+     name house2_trans;
+     phases AS;
+     from meter_2;
+     to house2_node;
+     configuration house_transformer;
+}
+object triplex_node {     
+     name house2_node;
+     phases AS;
+     nominal_voltage 124.00;     
+} 
+object triplex_line {
+     name tl2;
+     from house2_node;
+     to house2_meter;
+     phases AS;
+     length 10;
+     configuration triplex_line_config;
+}
+object triplex_meter {     
+     name house2_meter;
+     phases AS;
+     nominal_voltage 124.00;     
+} 
+object house {
+     name house2;
+     parent house2_meter;
+     thermal_integrity_level LITTLE;
+     hvac_power_factor 0.97;
+     cooling_COP 3;
+     floor_area 2080;
+	 cooling_setpoint 73;
+	 thermostat_deadband 2;
+	 air_temperature 70;
+	 object ZIPload {
+          schedule_skew 260;
+          base_power 2.909;
+          power_fraction 1.000000;
+          impedance_fraction 0.000000;
+          current_fraction 0.000000;
+          power_pf 0.970;
+          current_pf 0.970;
+          impedance_pf 0.970;
+          heat_fraction 0.90;
+     };
+}
+
+//after house 2
+object overhead_line {     
+      name line_3;     
+      phases ABCN;     
+      from meter_2;     
+      to meter_3;     
+      length 10000;     
+      configuration line_configuration_1;     
+} 
+object meter {     
+      name meter_3; 
+      groupid meter;    
+      phases ABCN;     
+      nominal_voltage 7216.88;     
+}
+
+//last house (3)
+object transformer {
+     name house3_trans;
+     phases AS;
+     from meter_3;
+     to house3_meter;
+     configuration house_transformer;
+}
+
+object triplex_meter {     
+     name house3_meter;
+     phases AS;
+     nominal_voltage 124.00;     
+} 
+object house {
+     name house3;
+     parent house3_meter;
+     thermal_integrity_level LITTLE;
+     hvac_power_factor 0.97;
+     cooling_COP 4;
+     floor_area 980;
+	 cooling_setpoint 75;
+	 thermostat_deadband 2;
+	 air_temperature 74;
+	 object ZIPload {
+          schedule_skew 260;
+          base_power 1.999;
+          power_fraction 1.000000;
+          impedance_fraction 0.000000;
+          current_fraction 0.000000;
+          power_pf 0.970;
+          current_pf 0.970;
+          impedance_pf 0.970;
+          heat_fraction 0.90;
+     };
+}
+
+//Recorders
+object recorder {
+	name substation_recorder;
+	parent substation_meter;
+     file substation_data.csv;
+     interval 60;
+     property measured_voltage_A, measured_current_A, measured_power_A;
+} 
+object multi_recorder{
+	name house_load;
+	file house_load.csv;
+	interval 60;
+	property house1_meter:measured_real_power, house2_meter:measured_real_power, house3_meter:measured_real_power;
+}
+object multi_recorder{
+	name house_temperatures;
+	file house_temperatures.csv;
+	interval 60;
+	property house1:air_temperature, house2:air_temperature, house3:air_temperature;
+}
+object multi_recorder{
+	name house1_data;
+	file house1_data.csv;
+	interval 60;
+	property house1:air_temperature, house1:outdoor_temperature, house1:is_COOL_on, house1:cooling_setpoint, house1_meter:measured_real_power, house1_meter:measured_real_energy;
+}
+object multi_recorder{
+	name house2_data;
+	file house2_data.csv;
+	interval 60;
+	property house2:air_temperature, house2:outdoor_temperature, house2:is_COOL_on, house2:cooling_setpoint, house2_meter:measured_real_power, house2_meter:measured_real_energy;
+}
+object multi_recorder{
+	name house3_data;
+	file house3_data.csv;
+	interval 60;
+	property house3:air_temperature, house3:outdoor_temperature, house3:is_COOL_on, house3:cooling_setpoint, house3_meter:measured_real_power, house3_meter:measured_real_energy;
+}
+object recorder {
+	name climate_recorder;
+	parent "Atlantic NJ";
+     file climate_data.csv;
+     interval 60;
+     property temperature, humidity, solar_direct, extraterrestrial_direct_normal;
+} 
