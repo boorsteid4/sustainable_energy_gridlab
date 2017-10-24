@@ -1,9 +1,5 @@
-/*	FALL2017.glm
- *	
- *		GridLAB-D file for three houses in Atlantic City, NJ.
- *		
- *
- */ 
+//	FALL2017.glm
+// 		GridLAB-D file for three houses in Atlantic City, NJ.
 
 module powerflow {
      solver_method NR;
@@ -13,8 +9,8 @@ module powerflow {
 
 clock {
      timezone EST+5EDT;					// Eastern Standard Time (+5EDT)
-     starttime '2017-10-23 23:59:99';
-     stoptime '2017-10-24 23:59:99';
+     starttime '2017-10-23 23:59:00';
+     stoptime '2017-10-24 23:59:00';
 }
 
 module tape;				// recorder-player module for data

@@ -243,3 +243,4 @@ ModelManifest.xml
 
 # GridLAB-D Files
 #*.glm
+*.tmy2
